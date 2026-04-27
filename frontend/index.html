@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMyCampus - Smart Campus Facility Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="images/logo-icon.svg">
+    
+    <!-- Google SEO (Lighthouse) -->
+    <meta name="description" content="BookMyCampus - The ultimate campus facility booking and management system. Reserve labs, classrooms, auditoriums, and sports grounds with ease.">
+    <meta name="keywords" content="campus booking, facility management, university resources, room reservation, student services">
+    <meta name="author" content="BookMyCampus Team">
+    <meta property="og:title" content="BookMyCampus - Smart Campus Facility Booking">
+    <meta property="og:description" content="Seamlessly reserve campus resources in seconds with real-time availability.">
+    <meta property="og:type" content="website">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #1e40af 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .header-logo-img {
+            height: 52px;
+            width: auto;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 11px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-block;
+            font-family: inherit;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-login {
+            background: white;
+            color: #1d4ed8;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.25);
+        }
+
+        .btn-signup {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-signup:hover {
+            background: white;
+            color: #1d4ed8;
+            border-color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-logo {
+            display: inline-block;
+            margin-bottom: 30px;
+            animation: floatLogo 3s ease-in-out infinite;
+        }
+
+        .hero-logo-img {
+            height: 120px;
+            width: auto;
+            filter: drop-shadow(0 6px 20px rgba(0,0,0,0.15));
+            background: rgba(255, 255, 255, 0.97);
+            padding: 15px 25px;
+            border-radius: 20px;
+        }
+
+        .hero-tagline {
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            opacity: 0.85;
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            letter-spacing: -1px;
+            line-height: 1.15;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Resources Grid */
+        .resources-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 30px;
+        }
+
+        .resources-section h2 {
+            text-align: center;
+            color: white;
+            font-size: 38px;
+            margin-bottom: 48px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 28px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .resource-icon {
+            font-size: 56px;
+            margin-bottom: 18px;
+            filter: drop-shadow(0 4px 8px rgba(29, 78, 216, 0.2));
+        }
+
+        .resource-card h3 {
+            color: #0f172a;
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .resource-card p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Features Section */
+        .features-section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 56px 40px;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        .features-section h2 {
+            text-align: center;
+            color: #0f172a;
+            font-size: 38px;
+            margin-bottom: 48px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 36px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .feature-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 36px;
+            box-shadow: 0 8px 24px rgba(29, 78, 216, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-item:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 32px rgba(29, 78, 216, 0.35);
+        }
+
+        .feature-item h3 {
+            color: #0f172a;
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .feature-item p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 30px;
+            text-align: center;
+        }
+
+        .benefits-section h2 {
+            color: white;
+            font-size: 38px;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 36px 20px;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .benefit-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .benefit-number {
+            font-size: 44px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .benefit-card h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .benefit-card p {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            max-width: 800px;
+            margin: 80px auto 60px;
+            padding: 56px 36px;
+            background: white;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        .cta-section h2 {
+            color: #0f172a;
+            font-size: 32px;
+            margin-bottom: 16px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .cta-section p {
+            color: #64748b;
+            font-size: 17px;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 16px 40px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(29, 78, 216, 0.35);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1d4ed8;
+            border: 1.5px solid #bfdbfe;
+        }
+
+        .btn-secondary:hover {
+            background: #eff6ff;
+            border-color: #1d4ed8;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 30px;
+            color: white;
+            opacity: 0.85;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Selection */
+        ::selection {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 34px;
+            }
+            .hero p {
+                font-size: 16px;
+            }
+            .resources-section h2,
+            .features-section h2,
+            .benefits-section h2 {
+                font-size: 28px;
+            }
+            .header-buttons {
+                gap: 8px;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-logo">
+                <img src="images/logo.png.png?v=3" alt="BookMyCampus" class="header-logo-img">
+                <span style="font-weight: 800; font-size: 22px; color: white;">BookMyCampus</span>
+            </div>
+            <div class="header-buttons">
+                <a href="login.html" class="btn btn-login">Login</a>
+                <a href="signup.html" class="btn btn-signup">Sign Up</a>
+            </div>
+            <!-- Google Translate Widget -->
+            <div id="google_translate_element"></div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero animate-fade-in">
+        <div class="hero-logo">
+            <div class="logo">
+                <img src="images/logo.png.png?v=3" alt="BookMyCampus" style="height: 120px; width: auto; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.1);">
+            </div>
+        </div>
+        <h1>Book Your Campus Resources</h1>
+        <p class="hero-tagline">Reserve &bull; Learn &bull; Achieve</p>
+        <p>Seamlessly reserve labs, classrooms, auditoriums, and sports facilities in seconds</p>
+    </section>
+
+    <!-- Resources Section -->
+    <section class="resources-section">
+        <h2>Available Campus Facilities</h2>
+        <div class="resources-grid">
+            <div class="resource-card">
+                <div class="resource-icon">🔬</div>
+                <h3>Computer Labs</h3>
+                <p>State-of-the-art computer labs with high-speed internet and latest software for your projects and research</p>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">📚</div>
+                <h3>Classrooms</h3>
+                <p>Modern lecture halls equipped with smart boards and audio-visual systems for interactive learning</p>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">🎭</div>
+                <h3>Auditoriums</h3>
+                <p>Spacious auditoriums perfect for seminars, conferences, cultural events, and presentations</p>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">⚽</div>
+                <h3>Sports Grounds</h3>
+                <p>Well-maintained sports facilities including basketball courts, football and cricket grounds</p>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">🛠️</div>
+                <h3>Workshops</h3>
+                <p>Fully equipped workshops for hands-on learning and practical skill development</p>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">💼</div>
+                <h3>Meeting Rooms</h3>
+                <p>Professional meeting spaces for group discussions, faculty meetings, and collaborative work</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2>Why Choose BookMyCampus?</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <h3>Instant Booking</h3>
+                <p>Book your desired facility in just a few clicks with our intuitive interface</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔒</div>
+                <h3>Zero Double Bookings</h3>
+                <p>Advanced ACID transaction system ensures no conflicts in reservations</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h3>Real-Time Availability</h3>
+                <p>See live availability status of all resources before making a booking</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">✅</div>
+                <h3>Quick Approvals</h3>
+                <p>Admin approval system ensures organized and verified bookings</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔔</div>
+                <h3>Smart Notifications</h3>
+                <p>Get instant updates on booking status and upcoming reservations</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📈</div>
+                <h3>Usage Analytics</h3>
+                <p>Track resource utilization with interactive charts and statistics</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <h2>Making Campus Life Easier</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-number">24/7</div>
+                <h4>Access</h4>
+                <p>Book anytime, anywhere</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-number">3</div>
+                <h4>User Roles</h4>
+                <p>Students, Faculty, Admins</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-number">17+</div>
+                <h4>Resources</h4>
+                <p>Diverse facilities available</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-number">100%</div>
+                <h4>Secure</h4>
+                <p>Protected transactions</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Get Started?</h2>
+        <p>Join thousands of students and faculty members who are already using BookMyCampus to simplify their campus resource management</p>
+        <div class="cta-buttons">
+            <a href="signup.html" class="btn btn-primary btn-large">Create Account</a>
+            <a href="login.html" class="btn btn-secondary btn-large">Sign In</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>BookMyCampus</strong></p>
+        <p>🎓 Built for Students, Faculty & Administrators</p>
+        <p>Making campus resource booking simple and efficient</p>
+    </footer>
+
+    <script>
+        // Add scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.resource-card, .feature-item, .benefit-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        // Google Translate API
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="gemini-ai.js"></script>
+</body>
+</html>

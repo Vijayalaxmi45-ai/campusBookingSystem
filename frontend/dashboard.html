@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BookMyCampus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Google SEO -->
+    <meta name="description" content="BookMyCampus Dashboard - Manage your facility bookings and view campus resources.">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-logo">
+                <img src="images/logo.png.png?v=3" alt="BookMyCampus" style="height: 45px; width: auto;">
+                <h1>BookMyCampus</h1>
+            </div>
+            <div class="user-info">
+                <div id="google_translate_element" style="margin-right: 20px;"></div>
+                <span id="userName">User</span>
+                <span class="role-badge" id="userRole">Role</span>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav>
+                <a href="#" class="nav-item active user-only" data-section="book-resource">
+                    <span class="icon">📅</span>
+                    Book Resource
+                </a>
+                <a href="#" class="nav-item" data-section="available-resources">
+                    <span class="icon">🏢</span>
+                    Available Resources
+                </a>
+                <a href="#" class="nav-item user-only" data-section="my-bookings">
+                    <span class="icon">📋</span>
+                    My Bookings
+                </a>
+                <a href="#" class="nav-item" data-section="notifications">
+                    <span class="icon">🔔</span>
+                    Notifications
+                    <span class="notification-badge" id="notificationCount">0</span>
+                </a>
+                <a href="#" class="nav-item" data-section="booked-resources">
+                    <span class="icon">📑</span>
+                    Booked Resources
+                </a>
+                <a href="#" class="nav-item" data-section="campus-calendar">
+                    <span class="icon">📆</span>
+                    Campus Calendar
+                </a>
+                <a href="#" class="nav-item" data-section="statistics">
+                    <span class="icon">📊</span>
+                    Statistics
+                </a>
+                <a href="#" class="nav-item" data-section="campus-map">
+                    <span class="icon">📍</span>
+                    Campus Map
+                </a>
+                <a href="#" class="nav-item admin-only" data-section="admin-panel" style="display: none;">
+                    <span class="icon">⚙️</span>
+                    Admin Panel
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Book Resource Section -->
+            <section id="book-resource" class="content-section active">
+                <h2>📅 Book a Resource</h2>
+                <div class="card">
+                    <form id="bookingForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bookingName">Your Name</label>
+                                <input type="text" id="bookingName" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingRole">Role</label>
+                                <input type="text" id="bookingRole" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="resourceSelect">Select Resource *</label>
+                                <select id="resourceSelect" required>
+                                    <option value="">-- Select Resource --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingDate">Date *</label>
+                                <input type="date" id="bookingDate" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startTime">Start Time *</label>
+                                <input type="time" id="startTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endTime">End Time *</label>
+                                <input type="time" id="endTime" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="purpose">Purpose *</label>
+                            <textarea id="purpose" rows="4" placeholder="Enter the purpose of booking" required></textarea>
+                        </div>
+
+                        <div class="resource-info" id="resourceInfo" style="display: none;">
+                            <h4>📍 Location Details</h4>
+                            <p><strong>Building:</strong> <span id="infoBuilding"></span></p>
+                            <p><strong>Floor:</strong> <span id="infoFloor"></span></p>
+                            <p><strong>Room:</strong> <span id="infoRoom"></span></p>
+                            <p><strong>Capacity:</strong> <span id="infoCapacity"></span></p>
+                        </div>
+
+                        <button type="button" class="btn btn-secondary" id="checkAvailabilityBtn" onclick="checkSmartSlot()">🔍 Check Availability</button>
+
+                        <!-- Smart Slot Recommendation Panel -->
+                        <div class="smart-slot-panel" id="smartSlotPanel" style="display: none;">
+                            <div class="ss-header" id="ssHeader"></div>
+                            <div class="ss-conflicts" id="ssConflicts" style="display: none;"></div>
+                            <div class="ss-recommendations" id="ssRecommendations" style="display: none;"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit Booking Request</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Available Resources Section -->
+            <section id="available-resources" class="content-section">
+                <h2>🏢 Available & Occupied Resources</h2>
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="classroom">Classrooms</button>
+                    <button class="filter-btn" data-filter="lab">Labs</button>
+                    <button class="filter-btn" data-filter="auditorium">Auditoriums</button>
+                    <button class="filter-btn" data-filter="sport ground">Sports</button>
+                    <button class="filter-btn" data-filter="workshop">Workshops</button>
+                    <button class="filter-btn" data-filter="meeting room">Meeting Rooms</button>
+                </div>
+                <div class="resources-grid" id="resourcesGrid">
+                    <!-- Resources will be loaded here -->
+                </div>
+            </section>
+
+            <!-- My Bookings Section -->
+            <section id="my-bookings" class="content-section">
+                <h2>📋 My Bookings</h2>
+                <div class="bookings-container" id="myBookingsContainer">
+                    <!-- Bookings will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Notifications Section -->
+            <section id="notifications" class="content-section">
+                <h2>🔔 Notifications</h2>
+                <div class="notifications-container" id="notificationsContainer">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section id="statistics" class="content-section">
+                <h2>📊 Campus Resource Analytics</h2>
+                <div class="stats-grid">
+                    <!-- Top Bar Chart - Most Used Resources -->
+                    <div class="stats-card stats-card-wide">
+                        <div class="stats-card-header">
+                            <h3>Most Used Resources</h3>
+                            <p class="stats-subtitle">Top 8 resources ranked by total booking count</p>
+                        </div>
+                        <div class="stats-chart-container">
+                            <canvas id="statsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Donut Chart - Resource Utilization by Type -->
+                    <div class="stats-card">
+                        <div class="stats-card-header">
+                            <h3>Resource Utilization by Type</h3>
+                            <p class="stats-subtitle">Booking share across campus resource categories</p>
+                        </div>
+                        <div class="stats-chart-container donut-container">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                        <div id="typeLegend" class="donut-legend"></div>
+                    </div>
+
+                    <!-- Summary Stats Cards -->
+                    <div class="stats-card">
+                        <div class="stats-card-header">
+                            <h3>Quick Overview</h3>
+                            <p class="stats-subtitle">Key campus metrics at a glance</p>
+                        </div>
+                        <div id="summaryStats" class="summary-stats-grid">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Booked Resources Section -->
+            <section id="booked-resources" class="content-section">
+                <h2>📑 All Booked Resources</h2>
+                <p class="booked-resources-subtitle">Overview of all confirmed resource bookings across campus. This data is read-only.</p>
+                <div class="booked-resources-filters">
+                    <input type="text" id="bookedSearchInput" class="booked-search-input" placeholder="Search by name, resource, or location...">
+                    <select id="bookedTypeFilter" class="booked-type-filter">
+                        <option value="all">All Types</option>
+                        <option value="classroom">Classroom</option>
+                        <option value="lab">Lab</option>
+                        <option value="auditorium">Auditorium</option>
+                        <option value="sport ground">Sport Ground</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="meeting room">Meeting Room</option>
+                    </select>
+                </div>
+                <div class="booked-resources-table-wrapper">
+                    <table class="booked-resources-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Resource Name</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Location</th>
+                                <th>Booked By</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookedResourcesBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="bookedResourcesEmpty" class="empty-state" style="display:none;">
+                    <div class="icon">📭</div>
+                    <h3>No Booked Resources</h3>
+                    <p>There are no approved bookings at the moment.</p>
+                </div>
+            </section>
+
+            <!-- Campus Calendar Section -->
+            <section id="campus-calendar" class="content-section">
+                <h2>📆 Campus Schedule Calendar</h2>
+                <p class="calendar-subtitle">View all approved bookings across campus. Click on events for details.</p>
+                <div class="calendar-filters">
+                    <button class="cal-filter-btn active" data-calfilter="all">All Resources</button>
+                    <button class="cal-filter-btn" data-calfilter="classroom">Classrooms</button>
+                    <button class="cal-filter-btn" data-calfilter="lab">Labs</button>
+                    <button class="cal-filter-btn" data-calfilter="auditorium">Auditoriums</button>
+                    <button class="cal-filter-btn" data-calfilter="sport ground">Sports</button>
+                    <button class="cal-filter-btn" data-calfilter="workshop">Workshops</button>
+                    <button class="cal-filter-btn" data-calfilter="meeting room">Meeting Rooms</button>
+                </div>
+                <div class="calendar-wrapper">
+                    <div id="campusCalendar"></div>
+                </div>
+                <div class="calendar-legend">
+                    <div class="legend-item"><span class="legend-dot" style="background: linear-gradient(135deg, #4CAF50, #66BB6A)"></span> Classroom</div>
+                    <div class="legend-item"><span class="legend-dot" style="background: linear-gradient(135deg, #2196F3, #42A5F5)"></span> Lab</div>
+                    <div class="legend-item"><span class="legend-dot" style="background: linear-gradient(135deg, #9C27B0, #BA68C8)"></span> Auditorium</div>
+                    <div class="legend-item"><span class="legend-dot" style="background: linear-gradient(135deg, #FF5722, #FF8A65)"></span> Sports</div>
+                    <div class="legend-item"><span class="legend-dot" style="background: linear-gradient(135deg, #FF9800, #FFB74D)"></span> Workshop</div>
+                    <div class="legend-item"><span class="legend-dot" style="background: linear-gradient(135deg, #00BCD4, #4DD0E1)"></span> Meeting Room</div>
+                </div>
+            </section>
+
+            <!-- Class Timetable Section -->
+            <section id="class-timetable" class="content-section">
+                <h2>🗓️ Class Timetable</h2>
+                <p class="tt-subtitle">Weekly class schedule across campus. Click on a cell for details.</p>
+
+                <div class="tt-controls">
+                    <div class="tt-day-tabs" id="ttDayTabs"></div>
+                    <div class="tt-filters">
+                        <select id="ttFilterDepartment">
+                            <option value="">All Departments</option>
+                        </select>
+                        <select id="ttFilterSemester">
+                            <option value="">All Semesters</option>
+                        </select>
+                        <button class="btn btn-secondary tt-reset-btn" onclick="resetTimetableFilters()">Reset</button>
+                    </div>
+                    <div class="tt-legend">
+                        <div class="tt-legend-item"><span class="tt-legend-dot tt-lecture"></span> Lecture</div>
+                        <div class="tt-legend-item"><span class="tt-legend-dot tt-lab"></span> Lab</div>
+                        <div class="tt-legend-item"><span class="tt-legend-dot tt-practical"></span> Practical</div>
+                    </div>
+                </div>
+
+                <div class="tt-grid-wrapper">
+                    <table class="tt-grid" id="timetableGrid">
+                        <thead>
+                            <tr>
+                                <th class="tt-time-header">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tt-empty-state" id="ttEmptyState" style="display: none;">
+                    <div class="icon">🗓️</div>
+                    <h3>No classes found</h3>
+                    <p>Try adjusting your filters or check back later.</p>
+                </div>
+            </section>
+
+            <!-- Timetable Detail Popup -->
+            <div class="tt-popup-overlay" id="ttPopupOverlay" style="display: none;">
+                <div class="tt-popup">
+                    <button class="tt-popup-close" onclick="closeTimetablePopup()">&times;</button>
+                    <h3 class="tt-popup-title" id="ttPopupTitle"></h3>
+                    <div class="tt-popup-details">
+                        <div class="tt-popup-row"><span class="tt-popup-label">Subject</span><span id="ttPopupSubject"></span></div>
+                        <div class="tt-popup-row"><span class="tt-popup-label">Faculty</span><span id="ttPopupFaculty"></span></div>
+                        <div class="tt-popup-row"><span class="tt-popup-label">Classroom</span><span id="ttPopupRoom"></span></div>
+                        <div class="tt-popup-row"><span class="tt-popup-label">Time</span><span id="ttPopupTime"></span></div>
+                        <div class="tt-popup-row"><span class="tt-popup-label">Department</span><span id="ttPopupDept"></span></div>
+                        <div class="tt-popup-row"><span class="tt-popup-label">Semester</span><span id="ttPopupSem"></span></div>
+                        <div class="tt-popup-row"><span class="tt-popup-label">Type</span><span id="ttPopupType"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campus Map Section (Google Maps API) -->
+            <section id="campus-map" class="content-section">
+                <h2>📍 N.K. Orchid College Campus Map</h2>
+                <p class="stats-subtitle">Interactive map of N.K. Orchid College of Engineering & Technology, Solapur.</p>
+                <div class="card" style="height: 600px; padding: 0; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        frameborder="0" 
+                        style="border:0" 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3801.350346850811!2d75.8394467751717!3d17.68091898325666!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc5da026f874551%3A0x6b4af87b1897d4!2sN.%20K.%20Orchid%20College%20of%20Engineering%20%26%20Technology%2C%20Solapur!5e0!3m2!1sen!2sin!4v1714207000000!5m2!1sen!2sin" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </section>
+            <section id="admin-panel" class="content-section">
+                <h2>⚙️ Admin Panel</h2>
+                
+                <!-- Tabs for Admin Panel -->
+                <div class="admin-tabs">
+                    <button class="admin-tab-btn active" data-tab="manage-bookings">Manage Bookings</button>
+                    <button class="admin-tab-btn" data-tab="manage-resources">Manage Resources</button>
+                </div>
+
+                <!-- Manage Bookings Tab -->
+                <div id="manage-bookings" class="admin-tab-content active">
+                    <h3>📋 Booking Requests / Wait List</h3>
+                    <div class="admin-bookings-container" id="adminBookingsContainer">
+                        <!-- Admin bookings will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Manage Resources Tab -->
+                <div id="manage-resources" class="admin-tab-content">
+                    <div class="admin-resource-header">
+                        <h3>🏢 Resource Management</h3>
+                        <button class="btn btn-primary" onclick="showAddResourceModal()">+ Add New Resource</button>
+                    </div>
+                    <div class="admin-resources-container" id="adminResourcesContainer">
+                        <!-- Admin resources will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Resource Modal -->
+    <div id="resourceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeResourceModal()">&times;</span>
+            <h2 id="modalTitle">Add New Resource</h2>
+            <form id="resourceForm">
+                <input type="hidden" id="resourceId">
+                
+                <div class="form-group">
+                    <label for="resourceName">Resource Name *</label>
+                    <input type="text" id="resourceName" required placeholder="e.g., Computer Lab 3">
+                </div>
+
+                <div class="form-group">
+                    <label for="resourceType">Resource Type *</label>
+                    <select id="resourceType" required>
+                        <option value="">-- Select Type --</option>
+                        <option value="classroom">Classroom</option>
+                        <option value="lab">Lab</option>
+                        <option value="auditorium">Auditorium</option>
+                        <option value="sport ground">Sport Ground</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="meeting room">Meeting Room</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="resourceBuilding">Building *</label>
+                        <input type="text" id="resourceBuilding" required placeholder="e.g., Block A">
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceFloor">Floor *</label>
+                        <input type="text" id="resourceFloor" required placeholder="e.g., 2">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="resourceRoom">Room Number *</label>
+                        <input type="text" id="resourceRoom" required placeholder="e.g., 203">
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceCapacity">Capacity *</label>
+                        <input type="number" id="resourceCapacity" required placeholder="e.g., 50">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="resourceStatus">Status *</label>
+                    <select id="resourceStatus" required>
+                        <option value="available">Available</option>
+                        <option value="occupied">Occupied</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeResourceModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Resource</button>
+                </div>
+            </form>
+        </div>
+    </div>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+    <script src="gemini-ai.js?v=3"></script>
+    <!-- Google Translate API Integration -->
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

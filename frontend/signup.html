@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - BookMyCampus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="images/logo-icon.svg">
+    
+    <!-- Google SEO -->
+    <meta name="description" content="Sign up for BookMyCampus to start booking campus resources today.">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <!-- Google Identity (One Tap) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "318187560137-4s1i592vrd241ct8ctb8ueakpum270ei.apps.googleusercontent.com",
+                callback: (res) => { console.log(res); alert('Google Sign-In prompt initialized'); }
+            });
+            google.accounts.id.prompt();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="header">
+                <div class="logo">
+                    <img src="images/logo.png.png?v=3" alt="BookMyCampus" style="height: 120px; width: auto; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                </div>
+                <h1>BookMyCampus</h1>
+                <p>Create your account</p>
+            </div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="Enter your full name" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="Enter your email" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Enter your password" 
+                        required
+                        minlength="6"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        placeholder="Confirm your password" 
+                        required
+                        minlength="6"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select your role</option>
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="secretKeyGroup" style="display: none;">
+                    <label for="secretKey">🔐 Admin Secret Key</label>
+                    <input 
+                        type="password" 
+                        id="secretKey" 
+                        name="secretKey" 
+                        placeholder="Enter the admin secret key"
+                    >
+                    <small style="color: #94a3b8; font-size: 12px; margin-top: 4px;">This key is provided by the system administrator</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+
+                <div class="divider"></div>
+
+                <p class="switch-auth">
+                    Already have an account? 
+                    <a href="login.html">Login here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="gemini-ai.js?v=3"></script>
+</body>
+</html>
