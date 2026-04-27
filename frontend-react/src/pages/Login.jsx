@@ -17,7 +17,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const googleLogin = useGoogleLogin({
+  const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
         const userInfo = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
@@ -99,10 +99,10 @@ export default function Login() {
             </div>
             
             {showAdminKey && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden">
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden mt-4">
                 <label className="input-label">Admin Secret Key</label>
                 <div className="relative">
-                  <input name="secretKey" type={showSecret ? 'text' : 'password'} className="input pr-10" placeholder="Enter admin secret key" value={form.secretKey} onChange={handleChange} />
+                  <input name="secretKey" type={showSecret ? 'text' : 'password'} className="input pr-10" placeholder="Enter admin secret key" value={form.secretKey} onChange={handleChange} required={showAdminKey} />
                   <button type="button" onClick={() => setShowSecret(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                     {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -124,7 +124,7 @@ export default function Login() {
             <div className="relative flex justify-center text-sm"><span className="px-2 bg-white text-slate-400">Or continue with</span></div>
           </div>
 
-          <button type="button" onClick={() => googleLogin()} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-sm font-semibold text-slate-700 transition-colors">
+          <button type="button" onClick={() => handleGoogleLogin()} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-sm font-semibold text-slate-700 transition-colors">
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
