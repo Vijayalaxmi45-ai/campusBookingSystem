@@ -1,4 +1,5 @@
 {
+  "name": "bookmycampus-v2",
   "version": 2,
   "buildCommand": "cd frontend-react && npm install && npm run build",
   "outputDirectory": "frontend-react/dist",
