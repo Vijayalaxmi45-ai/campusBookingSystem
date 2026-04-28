@@ -28,7 +28,11 @@ app.get('/health', (req, res) => {
     res.json({ status: 'Server is running', timestamp: new Date() });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`🚀 BookMyCampus server running on http://localhost:${PORT}`);
-});
+// Start server only if not running in serverless environment
+if (process.env.NODE_ENV !== 'production' || process.env.RUN_LOCAL) {
+    app.listen(PORT, () => {
+        console.log(`🚀 BookMyCampus server running on http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;
